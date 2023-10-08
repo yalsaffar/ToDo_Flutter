@@ -4,7 +4,7 @@ import 'task.dart';
 import 'task_screen.dart';
 import 'completed_tasks_screen.dart';
 import 'new_task_sheet.dart';
-
+import 'package:lottie/lottie.dart';
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -35,23 +35,73 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 3)).then((_) {
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_fadeController)
+      ..addListener(() {
+        setState(() {});
+      });
+
+    _fadeController.forward();
+
+    Future.delayed(const Duration(seconds: 5)).then((_) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
     });
-    
-    return const Scaffold(
-      body: Center(
-        child: Text(
-          'Welcome to ToDo App',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue, Color.fromARGB(255, 98, 63, 181)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Welcome to my ToDo App',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              const SizedBox(height: 20.0),
+              Opacity(
+                opacity: _fadeAnimation.value,
+                child: Lottie.asset('assets/loading.json', width: 250, height: 250), // Ensure you have a Lottie file named loading.json in your assets folder
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    super.dispose();
   }
 }
 
