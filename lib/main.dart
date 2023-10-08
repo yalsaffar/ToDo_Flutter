@@ -101,7 +101,7 @@ class WideLayout extends StatelessWidget {
             child: TaskScreen(
               tasks: tasks,
               onAddTask: onAddTask,
-              onCompleteTask: onCompleteTask,
+              onCompleteTask: onCompleteTask, onEditTask: (int ) {  },
             ),
           ),
           VerticalDivider(),
@@ -163,7 +163,7 @@ class _NarrowLayoutState extends State<NarrowLayout> {
           : TaskScreen(
               tasks: widget.tasks,
               onAddTask: widget.onAddTask,
-              onCompleteTask: widget.onCompleteTask,
+              onCompleteTask: widget.onCompleteTask, onEditTask: (int ) {  },
             ),
       floatingActionButton: showCompleted
           ? null
@@ -186,11 +186,13 @@ class TaskScreen extends StatelessWidget {
   final List<Task> tasks;
   final Function(Task) onAddTask;
   final Function(int) onCompleteTask;
+  final Function(int) onEditTask; // New function callback for editing
 
   TaskScreen({
     required this.tasks,
     required this.onAddTask,
     required this.onCompleteTask,
+    required this.onEditTask, // Make sure to pass this callback from parent
   });
 
   @override
@@ -202,15 +204,45 @@ class TaskScreen extends StatelessWidget {
         return ListTile(
           title: Text(task.title),
           subtitle: Text(task.description),
-          trailing: IconButton(
-            icon: Icon(Icons.check),
-            onPressed: () => onCompleteTask(index),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,  // To accommodate for multiple icons
+            children: [
+              IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TaskDetailsPage(
+                        task: task,
+                        onUpdateTask: (updatedTask) {
+                          // Update the task here
+                          onEditTask(index);
+                        },
+                        onDeleteTask: () {
+                          // You can provide delete functionality here if needed
+                        },
+                        onCompleteTask: () {
+                          // Complete the task
+                          onCompleteTask(index);
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.check),
+                onPressed: () => onCompleteTask(index),
+              ),
+            ],
           ),
         );
       },
     );
   }
 }
+
 
 class CompletedTasksScreen extends StatelessWidget {
   final List<Task> completedTasks;
@@ -299,6 +331,97 @@ class _NewTaskSheetState extends State<NewTaskSheet> {
             child: Text("Add Task"),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class TaskDetailsPage extends StatefulWidget {
+  final Task task;
+  final Function(Task) onUpdateTask;
+  final Function() onDeleteTask;
+  final Function() onCompleteTask;
+
+  TaskDetailsPage({
+    required this.task,
+    required this.onUpdateTask,
+    required this.onDeleteTask,
+    required this.onCompleteTask,
+  });
+
+  @override
+  _TaskDetailsPageState createState() => _TaskDetailsPageState();
+}
+
+class _TaskDetailsPageState extends State<TaskDetailsPage> {
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.task.title);
+    _descriptionController = TextEditingController(text: widget.task.description);
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Task Details'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              widget.onDeleteTask();
+              Navigator.pop(context);
+            },
+          )
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _titleController,
+              decoration: InputDecoration(labelText: 'Title'),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: _descriptionController,
+              decoration: InputDecoration(labelText: 'Description'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              child: Text('Complete Task'),
+              onPressed: () {
+                widget.onCompleteTask();
+                Navigator.pop(context);
+              },
+            ),
+            ElevatedButton(
+              child: Text('Update Task Details'),
+              onPressed: () {
+                Task updatedTask = Task(
+                  title: _titleController.text,
+                  description: _descriptionController.text,
+                  dueDate: widget.task.dueDate, // we're not changing the dueDate here for simplicity
+                  isCompleted: widget.task.isCompleted,
+                );
+                widget.onUpdateTask(updatedTask);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
