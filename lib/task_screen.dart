@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';  
 import 'task.dart';
 import 'task_details_page.dart';
 import 'utils.dart';
@@ -20,6 +21,39 @@ class TaskScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (tasks.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            AnimatedTextKit(
+              animatedTexts: [
+                TyperAnimatedText(
+                  'It\'s empty here!',
+                  textStyle: TextStyle(
+                    fontSize: 32.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                  speed: Duration(milliseconds: 100),
+                ),
+              ],
+              repeatForever: true,
+            ),
+            SizedBox(height: 20.0),
+            
+            Text(
+              'Add some tasks to get started.',
+              style: TextStyle(
+                fontSize: 18.0,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return ListView.builder(
       itemCount: tasks.length,
       itemBuilder: (ctx, index) {
@@ -69,7 +103,6 @@ class TaskScreen extends StatelessWidget {
             ],
           ),
         );
-
       },
     );
   }

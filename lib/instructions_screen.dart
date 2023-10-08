@@ -26,7 +26,7 @@ class _InstructionsScreenState extends State<InstructionsScreen> {
               children: <Widget>[
                 _buildInstructionPage(
                   title: "TASKS",
-                  content: "This is where your tasks are listed.",
+                  content: "This app helps you to manage your tasks!",
                   image: Icons.list,
                 ),
                 _buildInstructionPage(
@@ -39,7 +39,21 @@ class _InstructionsScreenState extends State<InstructionsScreen> {
                   content: "Completed tasks are marked and separated.",
                   image: Icons.done,
                 ),
-                // Add more slides as needed
+                _buildInstructionPage(
+                  title: "EDIT",
+                  content: "You can edit a task by pressing this button.",
+                  image: Icons.edit,
+                ),
+                _buildInstructionPage(
+                  title: "DELETE",
+                  content: "You can delete a task by pressing this button.",
+                  image: Icons.delete,
+                ),
+                _buildInstructionPage(
+                  title: "SWITCH",
+                  content: "You can switch to completed tasks by pressing this button.",
+                  image: Icons.swap_horiz,
+                ),
               ],
             ),
           ),
@@ -59,7 +73,7 @@ class _InstructionsScreenState extends State<InstructionsScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    if (_currentPage == 2) { // assuming you have 3 slides (0, 1, 2)
+                    if (_currentPage == 5) { 
                       Navigator.of(context).pushReplacementNamed("/home"); // Route to the HomeScreen
                     } else {
                       _pageController.nextPage(
@@ -83,7 +97,7 @@ class _InstructionsScreenState extends State<InstructionsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Icon(image, size: 100.0, color: Colors.indigo),
+          Icon(image, size: 100.0, color: Colors.deepPurple),
           SizedBox(height: 20.0),
           Text(title, style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
           SizedBox(height: 10.0),

@@ -4,7 +4,7 @@ import 'task.dart';
 class NewTaskSheet extends StatefulWidget {
   final Function(Task) onAddTask;
 
-  const NewTaskSheet({super.key, required this.onAddTask});
+  const NewTaskSheet({Key? key, required this.onAddTask}) : super(key: key);
 
   @override
   _NewTaskSheetState createState() => _NewTaskSheetState();
@@ -17,66 +17,109 @@ class _NewTaskSheetState extends State<NewTaskSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: titleController,
-            decoration: const InputDecoration(labelText: 'Title'),
-          ),
-          TextField(
-            controller: descriptionController,
-            decoration: const InputDecoration(labelText: 'Description'),
-          ),
-         ElevatedButton(
-          onPressed: () async {
-            DateTime? selectedDate = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now(),
-              lastDate: DateTime(2101),
-            );
-            if (selectedDate != null) {
-              TimeOfDay? selectedTime = await showTimePicker(
-                context: context,
-                initialTime: TimeOfDay.fromDateTime(dueDate),
-              );
-            if (selectedTime != null) {
-              setState(() {
-                dueDate = DateTime(
-                  selectedDate.year,
-                  selectedDate.month,
-                  selectedDate.day,
-                  selectedTime.hour,
-                  selectedTime.minute
-                );
-              });
-            } else {
-              setState(() {
-                dueDate = selectedDate;
-              });
-            }
-          }
-        },
-        child: const Text("Select Due Date & Time"),
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-            const SizedBox(height: 20)
-,
-          ElevatedButton(
-            onPressed: () {
-              Task newTask = Task(
-                title: titleController.text,
-                description: descriptionController.text,
-                dueDate: dueDate,
-              );
-              widget.onAddTask(newTask);
-              Navigator.pop(context);
-            },
-            child: const Text("Add Task"),
+      child: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(25),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Add New Task',
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: titleController,
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.deepPurple, width: 2.0),
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: descriptionController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.deepPurple, width: 2.0),
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.deepPurple,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                onPressed: () async {
+                  DateTime? selectedDate = await showDatePicker(
+                    context: context,
+                    initialDate: dueDate,
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(2101),
+                  );
+                  if (selectedDate != null) {
+                    TimeOfDay? selectedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.fromDateTime(dueDate),
+                    );
+                    if (selectedTime != null) {
+                      setState(() {
+                        dueDate = DateTime(
+                          selectedDate.year,
+                          selectedDate.month,
+                          selectedDate.day,
+                          selectedTime.hour,
+                          selectedTime.minute,
+                        );
+                      });
+                    }
+                  }
+                },
+                child: Text('Date & Time'),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.deepPurple,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  minimumSize: Size(double.infinity, 50),
+                ),
+                onPressed: () {
+                  Task newTask = Task(
+                    title: titleController.text,
+                    description: descriptionController.text,
+                    dueDate: dueDate,
+                  );
+                  widget.onAddTask(newTask);
+                  Navigator.pop(context);
+                },
+                child: Text('Add Task'),
+              ),
+              SizedBox(height: 15),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'task.dart';
 
-
 class TaskDetailsPage extends StatefulWidget {
   final Task task;
   final Function(Task) onUpdateTask;
   final Function() onDeleteTask;
   final Function() onCompleteTask;
 
-  const TaskDetailsPage({super.key, 
+  const TaskDetailsPage({
+    Key? key,
     required this.task,
     required this.onUpdateTask,
     required this.onDeleteTask,
     required this.onCompleteTask,
-  });
+  }) : super(key: key);
 
   @override
   _TaskDetailsPageState createState() => _TaskDetailsPageState();
@@ -31,7 +31,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
     super.initState();
     _titleController = TextEditingController(text: widget.task.title);
     _descriptionController = TextEditingController(text: widget.task.description);
-    dueDate = widget.task.dueDate;  // Initialize the dueDate with the task's dueDate
+    dueDate = widget.task.dueDate;
   }
 
   @override
@@ -45,84 +45,121 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Task Details'),
+        backgroundColor: Colors.deepPurple,
+        title: Text('Task Details'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.delete),
+            icon: Icon(Icons.delete),
             onPressed: () {
               widget.onDeleteTask();
-              Navigator.pop(context); // After deletion, immediately pop the page.
+              Navigator.pop(context);
             },
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(labelText: 'Title'),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(labelText: 'Description'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                DateTime? selectedDate = await showDatePicker(
-                  context: context,
-                  initialDate: dueDate,
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(2101),
-                );
-                if (selectedDate != null) {
-                  TimeOfDay? selectedTime = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay.fromDateTime(dueDate),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+          child: Column(
+            children: [
+              TextField(
+                controller: _titleController,
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                controller: _descriptionController,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () async {
+                        DateTime? selectedDate = await showDatePicker(
+                          context: context,
+                          initialDate: dueDate,
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(2101),
+                        );
+                        if (selectedDate != null) {
+                          TimeOfDay? selectedTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.fromDateTime(dueDate),
+                          );
+                          if (selectedTime != null) {
+                            setState(() {
+                              dueDate = DateTime(
+                                selectedDate.year,
+                                selectedDate.month,
+                                selectedDate.day,
+                                selectedTime.hour,
+                                selectedTime.minute,
+                              );
+                            });
+                          }
+                        }
+                      },
+                      child: Text('Change Date & Time'),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text('Update Task Details'),
+                onPressed: () {
+                  Task updatedTask = Task(
+                    title: _titleController.text,
+                    description: _descriptionController.text,
+                    dueDate: dueDate,
+                    isCompleted: widget.task.isCompleted,
                   );
-                  if (selectedTime != null) {
-                    setState(() {
-                      dueDate = DateTime(
-                        selectedDate.year,
-                        selectedDate.month,
-                        selectedDate.day,
-                        selectedTime.hour,
-                        selectedTime.minute,
-                      );
-                    });
-                  }
-                }
-              },
-              child: const Text("Change Due Date & Time"),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              child: const Text('Complete Task'),
-              onPressed: () {
-                widget.onCompleteTask();
-                Navigator.pop(context);
-              },
-            ),
-            ElevatedButton(
-              child: const Text('Update Task Details'),
-              onPressed: () {
-                Task updatedTask = Task(
-                  title: _titleController.text,
-                  description: _descriptionController.text,
-                  dueDate: dueDate,
-                  isCompleted: widget.task.isCompleted,
-                );
-                widget.onUpdateTask(updatedTask);
-                Navigator.pop(context);
-              },
-            ),
-          ],
+                  widget.onUpdateTask(updatedTask);
+                  Navigator.pop(context);
+                },
+              ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text('Complete Task'),
+                      onPressed: () {
+                        widget.onCompleteTask();
+                        Navigator.pop(context);
+                      },
+                    ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-

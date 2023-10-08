@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget {
       title: 'ToDo App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.indigo,
-        hintColor: Colors.amber,
+        primarySwatch: Colors.deepPurple,
+        hintColor: Colors.deepPurple,
         brightness: Brightness.light,
         fontFamily: 'Roboto',
         textTheme: const TextTheme(
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           bodyText2: TextStyle(fontSize: 14),
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: Colors.amber,
+          backgroundColor: Colors.deepPurple,
           foregroundColor: Colors.white,
         ),
       ),
@@ -81,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.blue, Color.fromARGB(255, 98, 63, 181)],
+            colors: [Color.fromARGB(255, 135, 85, 201), Color.fromARGB(255, 69, 27, 117)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
