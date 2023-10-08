@@ -405,6 +405,7 @@ class _NewTaskSheetState extends State<NewTaskSheet> {
   }
 }
 
+
 class TaskDetailsPage extends StatefulWidget {
   final Task task;
   final Function(Task) onUpdateTask;
@@ -425,12 +426,16 @@ class TaskDetailsPage extends StatefulWidget {
 class _TaskDetailsPageState extends State<TaskDetailsPage> {
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
+  DateTime dueDate;
+
+  _TaskDetailsPageState() : dueDate = DateTime.now();  // default initialization
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.task.title);
     _descriptionController = TextEditingController(text: widget.task.description);
+    dueDate = widget.task.dueDate;  // Initialize the dueDate with the task's dueDate
   }
 
   @override
@@ -470,6 +475,35 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
+              onPressed: () async {
+                DateTime? selectedDate = await showDatePicker(
+                  context: context,
+                  initialDate: dueDate,
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(2101),
+                );
+                if (selectedDate != null) {
+                  TimeOfDay? selectedTime = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.fromDateTime(dueDate),
+                  );
+                  if (selectedTime != null) {
+                    setState(() {
+                      dueDate = DateTime(
+                        selectedDate.year,
+                        selectedDate.month,
+                        selectedDate.day,
+                        selectedTime.hour,
+                        selectedTime.minute,
+                      );
+                    });
+                  }
+                }
+              },
+              child: Text("Change Due Date & Time"),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
               child: Text('Complete Task'),
               onPressed: () {
                 widget.onCompleteTask();
@@ -482,7 +516,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                 Task updatedTask = Task(
                   title: _titleController.text,
                   description: _descriptionController.text,
-                  dueDate: widget.task.dueDate,
+                  dueDate: dueDate,
                   isCompleted: widget.task.isCompleted,
                 );
                 widget.onUpdateTask(updatedTask);
