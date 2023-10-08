@@ -1,40 +1,63 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'task.dart';
 import 'task_screen.dart';
 import 'completed_tasks_screen.dart';
 import 'new_task_sheet.dart';
-import 'task_details_page.dart';
-import 'utils.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'ToDo App',
-      debugShowCheckedModeBanner: false, // Removing the debug banner
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.indigo,
         hintColor: Colors.amber,
         brightness: Brightness.light,
         fontFamily: 'Roboto',
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           headline1: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
           bodyText1: TextStyle(fontSize: 16),
           bodyText2: TextStyle(fontSize: 14),
         ),
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: Colors.amber,
           foregroundColor: Colors.white,
         ),
       ),
-      home: HomeScreen(),
+      home: const SplashScreen(),
+    );
+  }
+}
+
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Future.delayed(const Duration(seconds: 3)).then((_) {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
+    });
+    
+    return const Scaffold(
+      body: Center(
+        child: Text(
+          'Welcome to ToDo App',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
     );
   }
 }
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -107,7 +130,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-
 class WideLayout extends StatelessWidget {
   final List<Task> tasks;
   final List<Task> completedTasks;
@@ -117,7 +139,8 @@ class WideLayout extends StatelessWidget {
   final Function(int) onCompleteTask;
   final Function(int) onUncompleteTask;
 
-  WideLayout({
+  const WideLayout({
+    Key? key,
     required this.tasks,
     required this.completedTasks,
     required this.onAddTask,
@@ -125,13 +148,13 @@ class WideLayout extends StatelessWidget {
     required this.onDeleteTask,
     required this.onCompleteTask,
     required this.onUncompleteTask,
-  });
+  }) : super(key: key);
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tasks'),
+        title: const Text('Tasks'),
         backgroundColor: Colors.indigo,
         centerTitle: true,
       ),
@@ -146,7 +169,7 @@ class WideLayout extends StatelessWidget {
               onDeleteTask: onDeleteTask,
             ),
           ),
-          VerticalDivider(color: Colors.grey[300], width: 1.0),
+          const VerticalDivider(color: Colors.grey, width: 1.0),
           Expanded(
             child: CompletedTasksScreen(
               completedTasks: completedTasks,
@@ -156,21 +179,18 @@ class WideLayout extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        label: Text('Add Task'),
-        icon: Icon(Icons.add),
+        label: const Text('Add Task'),
+        icon: const Icon(Icons.add),
         onPressed: () {
           showModalBottomSheet(
             context: context,
-            builder: (_) => NewTaskSheet(
-              onAddTask: onAddTask,
-            ),
+            builder: (_) => NewTaskSheet(onAddTask: onAddTask),
           );
         },
       ),
     );
   }
 }
-
 
 class NarrowLayout extends StatefulWidget {
   final List<Task> tasks;
@@ -181,7 +201,8 @@ class NarrowLayout extends StatefulWidget {
   final Function(int) onCompleteTask;
   final Function(int) onUncompleteTask;
 
-  NarrowLayout({
+  const NarrowLayout({
+    Key? key,
     required this.tasks,
     required this.completedTasks,
     required this.onAddTask,
@@ -189,11 +210,12 @@ class NarrowLayout extends StatefulWidget {
     required this.onDeleteTask,
     required this.onCompleteTask,
     required this.onUncompleteTask,
-  });
+  }) : super(key: key);
 
   @override
   _NarrowLayoutState createState() => _NarrowLayoutState();
 }
+
 class _NarrowLayoutState extends State<NarrowLayout> {
   bool showCompleted = false;
 
@@ -205,7 +227,7 @@ class _NarrowLayoutState extends State<NarrowLayout> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.swap_horiz),
+            icon: const Icon(Icons.swap_horiz),
             onPressed: () {
               setState(() {
                 showCompleted = !showCompleted;
@@ -214,31 +236,33 @@ class _NarrowLayoutState extends State<NarrowLayout> {
           )
         ],
       ),
-      body: showCompleted
-          ? CompletedTasksScreen(
-              completedTasks: widget.completedTasks,
-              onUncompleteTask: widget.onUncompleteTask,
-            )
-          : TaskScreen(
-              tasks: widget.tasks,
-              onAddTask: widget.onAddTask,
-              onCompleteTask: widget.onCompleteTask,
-              onUpdateTask: widget.onUpdateTask,
-              onDeleteTask: widget.onDeleteTask,
-            ),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: showCompleted
+            ? CompletedTasksScreen(
+                key: ValueKey<bool>(showCompleted),
+                completedTasks: widget.completedTasks,
+                onUncompleteTask: widget.onUncompleteTask,
+              )
+            : TaskScreen(
+                key: ValueKey<bool>(showCompleted),
+                tasks: widget.tasks,
+                onAddTask: widget.onAddTask,
+                onCompleteTask: widget.onCompleteTask,
+                onUpdateTask: widget.onUpdateTask,
+                onDeleteTask: widget.onDeleteTask,
+              ),
+      ),
       floatingActionButton: FloatingActionButton.extended(
-        label: Text('Add Task'),
-        icon: Icon(Icons.add),
+        label: const Text('Add Task'),
+        icon: const Icon(Icons.add),
         onPressed: () {
           showModalBottomSheet(
             context: context,
-            builder: (_) => NewTaskSheet(
-              onAddTask: widget.onAddTask,
-            ),
+            builder: (_) => NewTaskSheet(onAddTask: widget.onAddTask),
           );
         },
       ),
     );
   }
 }
-

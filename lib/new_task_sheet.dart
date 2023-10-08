@@ -4,7 +4,7 @@ import 'task.dart';
 class NewTaskSheet extends StatefulWidget {
   final Function(Task) onAddTask;
 
-  NewTaskSheet({required this.onAddTask});
+  const NewTaskSheet({super.key, required this.onAddTask});
 
   @override
   _NewTaskSheetState createState() => _NewTaskSheetState();
@@ -13,22 +13,22 @@ class NewTaskSheet extends StatefulWidget {
 class _NewTaskSheetState extends State<NewTaskSheet> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
-  DateTime dueDate = DateTime.now().add(Duration(hours: 1));
+  DateTime dueDate = DateTime.now().add(const Duration(hours: 1));
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: titleController,
-            decoration: InputDecoration(labelText: 'Title'),
+            decoration: const InputDecoration(labelText: 'Title'),
           ),
           TextField(
             controller: descriptionController,
-            decoration: InputDecoration(labelText: 'Description'),
+            decoration: const InputDecoration(labelText: 'Description'),
           ),
          ElevatedButton(
           onPressed: () async {
@@ -60,9 +60,9 @@ class _NewTaskSheetState extends State<NewTaskSheet> {
             }
           }
         },
-        child: Text("Select Due Date & Time"),
+        child: const Text("Select Due Date & Time"),
       ),
-            SizedBox(height: 20)
+            const SizedBox(height: 20)
 ,
           ElevatedButton(
             onPressed: () {
@@ -74,7 +74,7 @@ class _NewTaskSheetState extends State<NewTaskSheet> {
               widget.onAddTask(newTask);
               Navigator.pop(context);
             },
-            child: Text("Add Task"),
+            child: const Text("Add Task"),
           ),
         ],
       ),

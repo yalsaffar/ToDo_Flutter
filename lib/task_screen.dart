@@ -10,7 +10,7 @@ class TaskScreen extends StatelessWidget {
   final Function(int, Task) onUpdateTask;
   final Function(int) onDeleteTask;
 
-  TaskScreen({
+  const TaskScreen({super.key, 
     required this.tasks,
     required this.onAddTask,
     required this.onCompleteTask,
@@ -30,10 +30,10 @@ class TaskScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(task.description),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
                 "Due: ${formatDate(task.dueDate)}",
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ],
           ),
@@ -41,7 +41,7 @@ class TaskScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon: Icon(Icons.edit),
+                icon: const Icon(Icons.edit),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -63,7 +63,7 @@ class TaskScreen extends StatelessWidget {
                 },
               ),
               IconButton(
-                icon: Icon(Icons.check),
+                icon: const Icon(Icons.check),
                 onPressed: () => onCompleteTask(index),
               ),
             ],

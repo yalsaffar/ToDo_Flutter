@@ -6,7 +6,7 @@ class CompletedTasksScreen extends StatelessWidget {
   final List<Task> completedTasks;
   final Function(int) onUncompleteTask;
 
-  CompletedTasksScreen({
+  const CompletedTasksScreen({super.key, 
     required this.completedTasks,
     required this.onUncompleteTask,
   });
@@ -18,20 +18,20 @@ class CompletedTasksScreen extends StatelessWidget {
       itemBuilder: (ctx, index) {
         final task = completedTasks[index];
         return ListTile(
-          title: Text(task.title, style: TextStyle(decoration: TextDecoration.lineThrough)),
+          title: Text(task.title, style: const TextStyle(decoration: TextDecoration.lineThrough)),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(task.description),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
                 "Due: ${formatDate(task.dueDate)}",
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ],
           ),
           trailing: IconButton(
-            icon: Icon(Icons.undo),
+            icon: const Icon(Icons.undo),
             onPressed: () => onUncompleteTask(index),
           ),
         );

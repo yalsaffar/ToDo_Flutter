@@ -8,7 +8,7 @@ class TaskDetailsPage extends StatefulWidget {
   final Function() onDeleteTask;
   final Function() onCompleteTask;
 
-  TaskDetailsPage({
+  const TaskDetailsPage({super.key, 
     required this.task,
     required this.onUpdateTask,
     required this.onDeleteTask,
@@ -45,10 +45,10 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task Details'),
+        title: const Text('Task Details'),
         actions: [
           IconButton(
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             onPressed: () {
               widget.onDeleteTask();
               Navigator.pop(context); // After deletion, immediately pop the page.
@@ -62,14 +62,14 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
           children: [
             TextField(
               controller: _titleController,
-              decoration: InputDecoration(labelText: 'Title'),
+              decoration: const InputDecoration(labelText: 'Title'),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: _descriptionController,
-              decoration: InputDecoration(labelText: 'Description'),
+              decoration: const InputDecoration(labelText: 'Description'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 DateTime? selectedDate = await showDatePicker(
@@ -96,18 +96,18 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                   }
                 }
               },
-              child: Text("Change Due Date & Time"),
+              child: const Text("Change Due Date & Time"),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
-              child: Text('Complete Task'),
+              child: const Text('Complete Task'),
               onPressed: () {
                 widget.onCompleteTask();
                 Navigator.pop(context);
               },
             ),
             ElevatedButton(
-              child: Text('Update Task Details'),
+              child: const Text('Update Task Details'),
               onPressed: () {
                 Task updatedTask = Task(
                   title: _titleController.text,
