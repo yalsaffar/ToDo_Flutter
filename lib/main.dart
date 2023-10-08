@@ -249,8 +249,7 @@ class TaskScreen extends StatelessWidget {
                           onUpdateTask(index, updatedTask);
                         },
                         onDeleteTask: () {
-                          onDeleteTask(index);
-                          Navigator.pop(context);
+                          onDeleteTask(index); 
                         },
                         onCompleteTask: () {
                           onCompleteTask(index);
@@ -408,9 +407,9 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
             icon: Icon(Icons.delete),
             onPressed: () {
               widget.onDeleteTask();
-              Navigator.pop(context);
+              Navigator.pop(context); // After deletion, immediately pop the page.
             },
-          )
+          ),
         ],
       ),
       body: Padding(
