@@ -8,12 +8,38 @@ import 'utils.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'ToDo App',
+      debugShowCheckedModeBanner: false, // Removing the debug banner
+      theme: ThemeData(
+        primarySwatch: Colors.indigo,
+        hintColor: Colors.amber,
+        brightness: Brightness.light,
+        fontFamily: 'Roboto',
+        textTheme: TextTheme(
+          headline1: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+          bodyText1: TextStyle(fontSize: 16),
+          bodyText2: TextStyle(fontSize: 14),
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.amber,
+          foregroundColor: Colors.white,
+        ),
+      ),
+      home: HomeScreen(),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   List<Task> tasks = [];
   List<Task> completedTasks = [];
 
@@ -53,34 +79,30 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ToDo App',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth > 600) {
-            return WideLayout(
-              tasks: tasks,
-              completedTasks: completedTasks,
-              onAddTask: addTask,
-              onUpdateTask: updateTask,
-              onDeleteTask: deleteTask,
-              onCompleteTask: completeTask,
-              onUncompleteTask: uncompleteTask,
-            );
-          } else {
-            return NarrowLayout(
-              tasks: tasks,
-              completedTasks: completedTasks,
-              onAddTask: addTask,
-              onUpdateTask: updateTask,
-              onDeleteTask: deleteTask,
-              onCompleteTask: completeTask,
-              onUncompleteTask: uncompleteTask,
-            );
-          }
-        },
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > 600) {
+          return WideLayout(
+            tasks: tasks,
+            completedTasks: completedTasks,
+            onAddTask: addTask,
+            onUpdateTask: updateTask,
+            onDeleteTask: deleteTask,
+            onCompleteTask: completeTask,
+            onUncompleteTask: uncompleteTask,
+          );
+        } else {
+          return NarrowLayout(
+            tasks: tasks,
+            completedTasks: completedTasks,
+            onAddTask: addTask,
+            onUpdateTask: updateTask,
+            onDeleteTask: deleteTask,
+            onCompleteTask: completeTask,
+            onUncompleteTask: uncompleteTask,
+          );
+        }
+      },
     );
   }
 }
@@ -105,9 +127,14 @@ class WideLayout extends StatelessWidget {
     required this.onUncompleteTask,
   });
 
-  @override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Tasks'),
+        backgroundColor: Colors.indigo,
+        centerTitle: true,
+      ),
       body: Row(
         children: [
           Expanded(
@@ -119,7 +146,7 @@ class WideLayout extends StatelessWidget {
               onDeleteTask: onDeleteTask,
             ),
           ),
-          VerticalDivider(),
+          VerticalDivider(color: Colors.grey[300], width: 1.0),
           Expanded(
             child: CompletedTasksScreen(
               completedTasks: completedTasks,
@@ -128,9 +155,22 @@ class WideLayout extends StatelessWidget {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text('Add Task'),
+        icon: Icon(Icons.add),
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (_) => NewTaskSheet(
+              onAddTask: onAddTask,
+            ),
+          );
+        },
+      ),
     );
   }
 }
+
 
 class NarrowLayout extends StatefulWidget {
   final List<Task> tasks;
@@ -154,7 +194,6 @@ class NarrowLayout extends StatefulWidget {
   @override
   _NarrowLayoutState createState() => _NarrowLayoutState();
 }
-
 class _NarrowLayoutState extends State<NarrowLayout> {
   bool showCompleted = false;
 
@@ -163,6 +202,7 @@ class _NarrowLayoutState extends State<NarrowLayout> {
     return Scaffold(
       appBar: AppBar(
         title: Text(showCompleted ? "Completed Tasks" : "Pending Tasks"),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: Icon(Icons.swap_horiz),
@@ -186,21 +226,19 @@ class _NarrowLayoutState extends State<NarrowLayout> {
               onUpdateTask: widget.onUpdateTask,
               onDeleteTask: widget.onDeleteTask,
             ),
-      floatingActionButton: showCompleted
-          ? null
-          : FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (_) => NewTaskSheet(
-                    onAddTask: widget.onAddTask,
-                  ),
-                );
-              },
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text('Add Task'),
+        icon: Icon(Icons.add),
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (_) => NewTaskSheet(
+              onAddTask: widget.onAddTask,
             ),
+          );
+        },
+      ),
     );
   }
 }
-
 
