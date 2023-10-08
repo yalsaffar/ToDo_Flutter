@@ -302,12 +302,23 @@ class CompletedTasksScreen extends StatelessWidget {
         final task = completedTasks[index];
         return ListTile(
           title: Text(task.title, style: TextStyle(decoration: TextDecoration.lineThrough)),
-          subtitle: Text(task.description),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(task.description),
+              SizedBox(height: 4),
+              Text(
+                "Due: ${formatDate(task.dueDate)}",
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
           trailing: IconButton(
             icon: Icon(Icons.undo),
             onPressed: () => onUncompleteTask(index),
           ),
         );
+
       },
     );
   }
