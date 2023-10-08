@@ -311,7 +311,7 @@ class NewTaskSheet extends StatefulWidget {
 class _NewTaskSheetState extends State<NewTaskSheet> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
-  DateTime dueDate = DateTime.now();
+  DateTime dueDate = DateTime.now().add(Duration(hours: 1));
 
   @override
   Widget build(BuildContext context) {
@@ -328,22 +328,40 @@ class _NewTaskSheetState extends State<NewTaskSheet> {
             controller: descriptionController,
             decoration: InputDecoration(labelText: 'Description'),
           ),
-          ElevatedButton(
-            onPressed: () async {
-              DateTime? selectedDate = await showDatePicker(
+         ElevatedButton(
+          onPressed: () async {
+            DateTime? selectedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime.now(),
+              lastDate: DateTime(2101),
+            );
+            if (selectedDate != null) {
+              TimeOfDay? selectedTime = await showTimePicker(
                 context: context,
-                initialDate: DateTime.now(),
-                firstDate: DateTime.now(),
-                lastDate: DateTime(2101),
+                initialTime: TimeOfDay.fromDateTime(dueDate),
               );
-              if (selectedDate != null) {
-                setState(() {
-                  dueDate = selectedDate;
-                });
-              }
-            },
-            child: Text("Select Due Date"),
-          ),
+            if (selectedTime != null) {
+              setState(() {
+                dueDate = DateTime(
+                  selectedDate.year,
+                  selectedDate.month,
+                  selectedDate.day,
+                  selectedTime.hour,
+                  selectedTime.minute
+                );
+              });
+            } else {
+              setState(() {
+                dueDate = selectedDate;
+              });
+            }
+          }
+        },
+        child: Text("Select Due Date & Time"),
+      ),
+            SizedBox(height: 20)
+,
           ElevatedButton(
             onPressed: () {
               Task newTask = Task(
