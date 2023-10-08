@@ -121,6 +121,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0; // To keep track of the active screen
   List<Task> tasks = [];
   List<Task> completedTasks = [];
 
@@ -158,29 +159,101 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _onItemSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth > 600) {
-          return WideLayout(
-            tasks: tasks,
-            completedTasks: completedTasks,
-            onAddTask: addTask,
-            onUpdateTask: updateTask,
-            onDeleteTask: deleteTask,
-            onCompleteTask: completeTask,
-            onUncompleteTask: uncompleteTask,
+          // Wide layout
+          return Scaffold(
+            body: Row(
+              children: [
+                NavigationRail(
+                  selectedIndex: _selectedIndex,
+                  onDestinationSelected: _onItemSelected,
+                  labelType: NavigationRailLabelType.selected,
+                  destinations: [
+                    NavigationRailDestination(
+                      icon: const Icon(Icons.list),
+                      selectedIcon: const Icon(Icons.list, color: Colors.deepPurple),
+                      label: const Text('Tasks'),
+                    ),
+                    NavigationRailDestination(
+                      icon: const Icon(Icons.check_circle_outline),
+                      selectedIcon: const Icon(Icons.check_circle, color: Colors.deepPurple),
+                      label: const Text('Completed'),
+                    ),
+                  ],
+                ),
+                const VerticalDivider(thickness: 1, width: 1),
+                Expanded(
+                  child: _selectedIndex == 0
+                      ? TaskScreen(
+                          tasks: tasks,
+                          onAddTask: addTask,
+                          onCompleteTask: completeTask,
+                          onUpdateTask: updateTask,
+                          onDeleteTask: deleteTask,
+                        )
+                      : CompletedTasksScreen(
+                          completedTasks: completedTasks,
+                          onUncompleteTask: uncompleteTask,
+                        ),
+                ),
+              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (_) => NewTaskSheet(onAddTask: addTask),
+                );
+              },
+              child: const Icon(Icons.add),
+            ),
           );
         } else {
-          return NarrowLayout(
-            tasks: tasks,
-            completedTasks: completedTasks,
-            onAddTask: addTask,
-            onUpdateTask: updateTask,
-            onDeleteTask: deleteTask,
-            onCompleteTask: completeTask,
-            onUncompleteTask: uncompleteTask,
+          // Narrow layout
+          List<Widget> _screens = [
+            TaskScreen(
+              tasks: tasks,
+              onAddTask: addTask,
+              onCompleteTask: completeTask,
+              onUpdateTask: updateTask,
+              onDeleteTask: deleteTask,
+            ),
+            CompletedTasksScreen(
+              completedTasks: completedTasks,
+              onUncompleteTask: uncompleteTask,
+            ),
+          ];
+
+          return Scaffold(
+            appBar: AppBar(title: _selectedIndex == 0 ? const Text('Tasks') : const Text('Completed Tasks')),
+            body: _screens[_selectedIndex],
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _selectedIndex,
+              onTap: _onItemSelected,
+              items: const [
+                BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Tasks'),
+                BottomNavigationBarItem(icon: Icon(Icons.check_circle_outline), label: 'Completed'),
+              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (_) => NewTaskSheet(onAddTask: addTask),
+                );
+              },
+              child: const Icon(Icons.add),
+            ),
           );
         }
       },

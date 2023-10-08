@@ -50,9 +50,9 @@ class _InstructionsScreenState extends State<InstructionsScreen> {
                   image: Icons.delete,
                 ),
                 _buildInstructionPage(
-                  title: "SWITCH",
+                  title: "COMPLETED",
                   content: "You can switch to completed tasks by pressing this button.",
-                  image: Icons.swap_horiz,
+                  image: Icons.check_circle,
                 ),
               ],
             ),
@@ -82,7 +82,7 @@ class _InstructionsScreenState extends State<InstructionsScreen> {
                       );
                     }
                   },
-                  child: Text(_currentPage == 2 ? "Start" : "Next"),
+                  child: Text(_currentPage == 5 ? "Start" : "Next"),
                 ),
               ],
             ),
