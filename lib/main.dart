@@ -31,6 +31,18 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void updateTask(int index, Task newTask) {
+    setState(() {
+      tasks[index] = newTask;
+    });
+  }
+
+  void deleteTask(int index) {
+    setState(() {
+      tasks.removeAt(index);
+    });
+  }
+
   void completeTask(int index) {
     setState(() {
       Task completedTask = tasks.removeAt(index);
@@ -59,6 +71,8 @@ class _MyAppState extends State<MyApp> {
               tasks: tasks,
               completedTasks: completedTasks,
               onAddTask: addTask,
+              onUpdateTask: updateTask,
+              onDeleteTask: deleteTask,
               onCompleteTask: completeTask,
               onUncompleteTask: uncompleteTask,
             );
@@ -67,6 +81,8 @@ class _MyAppState extends State<MyApp> {
               tasks: tasks,
               completedTasks: completedTasks,
               onAddTask: addTask,
+              onUpdateTask: updateTask,
+              onDeleteTask: deleteTask,
               onCompleteTask: completeTask,
               onUncompleteTask: uncompleteTask,
             );
@@ -81,6 +97,8 @@ class WideLayout extends StatelessWidget {
   final List<Task> tasks;
   final List<Task> completedTasks;
   final Function(Task) onAddTask;
+  final Function(int, Task) onUpdateTask;
+  final Function(int) onDeleteTask;
   final Function(int) onCompleteTask;
   final Function(int) onUncompleteTask;
 
@@ -88,6 +106,8 @@ class WideLayout extends StatelessWidget {
     required this.tasks,
     required this.completedTasks,
     required this.onAddTask,
+    required this.onUpdateTask,
+    required this.onDeleteTask,
     required this.onCompleteTask,
     required this.onUncompleteTask,
   });
@@ -101,7 +121,9 @@ class WideLayout extends StatelessWidget {
             child: TaskScreen(
               tasks: tasks,
               onAddTask: onAddTask,
-              onCompleteTask: onCompleteTask, onEditTask: (int ) {  },
+              onCompleteTask: onCompleteTask,
+              onUpdateTask: onUpdateTask,
+              onDeleteTask: onDeleteTask,
             ),
           ),
           VerticalDivider(),
@@ -121,6 +143,8 @@ class NarrowLayout extends StatefulWidget {
   final List<Task> tasks;
   final List<Task> completedTasks;
   final Function(Task) onAddTask;
+  final Function(int, Task) onUpdateTask;
+  final Function(int) onDeleteTask;
   final Function(int) onCompleteTask;
   final Function(int) onUncompleteTask;
 
@@ -128,6 +152,8 @@ class NarrowLayout extends StatefulWidget {
     required this.tasks,
     required this.completedTasks,
     required this.onAddTask,
+    required this.onUpdateTask,
+    required this.onDeleteTask,
     required this.onCompleteTask,
     required this.onUncompleteTask,
   });
@@ -163,7 +189,9 @@ class _NarrowLayoutState extends State<NarrowLayout> {
           : TaskScreen(
               tasks: widget.tasks,
               onAddTask: widget.onAddTask,
-              onCompleteTask: widget.onCompleteTask, onEditTask: (int ) {  },
+              onCompleteTask: widget.onCompleteTask,
+              onUpdateTask: widget.onUpdateTask,
+              onDeleteTask: widget.onDeleteTask,
             ),
       floatingActionButton: showCompleted
           ? null
@@ -186,13 +214,15 @@ class TaskScreen extends StatelessWidget {
   final List<Task> tasks;
   final Function(Task) onAddTask;
   final Function(int) onCompleteTask;
-  final Function(int) onEditTask; // New function callback for editing
+  final Function(int, Task) onUpdateTask;
+  final Function(int) onDeleteTask;
 
   TaskScreen({
     required this.tasks,
     required this.onAddTask,
     required this.onCompleteTask,
-    required this.onEditTask, // Make sure to pass this callback from parent
+    required this.onUpdateTask,
+    required this.onDeleteTask,
   });
 
   @override
@@ -205,7 +235,7 @@ class TaskScreen extends StatelessWidget {
           title: Text(task.title),
           subtitle: Text(task.description),
           trailing: Row(
-            mainAxisSize: MainAxisSize.min,  // To accommodate for multiple icons
+            mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
                 icon: Icon(Icons.edit),
@@ -216,14 +246,13 @@ class TaskScreen extends StatelessWidget {
                       builder: (context) => TaskDetailsPage(
                         task: task,
                         onUpdateTask: (updatedTask) {
-                          // Update the task here
-                          onEditTask(index);
+                          onUpdateTask(index, updatedTask);
                         },
                         onDeleteTask: () {
-                          // You can provide delete functionality here if needed
+                          onDeleteTask(index);
+                          Navigator.pop(context);
                         },
                         onCompleteTask: () {
-                          // Complete the task
                           onCompleteTask(index);
                         },
                       ),
@@ -242,7 +271,6 @@ class TaskScreen extends StatelessWidget {
     );
   }
 }
-
 
 class CompletedTasksScreen extends StatelessWidget {
   final List<Task> completedTasks;
@@ -301,7 +329,6 @@ class _NewTaskSheetState extends State<NewTaskSheet> {
             controller: descriptionController,
             decoration: InputDecoration(labelText: 'Description'),
           ),
-          // Simple DatePicker (This can be enhanced)
           ElevatedButton(
             onPressed: () async {
               DateTime? selectedDate = await showDatePicker(
@@ -413,7 +440,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                 Task updatedTask = Task(
                   title: _titleController.text,
                   description: _descriptionController.text,
-                  dueDate: widget.task.dueDate, // we're not changing the dueDate here for simplicity
+                  dueDate: widget.task.dueDate,
                   isCompleted: widget.task.isCompleted,
                 );
                 widget.onUpdateTask(updatedTask);
