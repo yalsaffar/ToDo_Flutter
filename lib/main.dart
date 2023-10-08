@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+String formatDate(DateTime dateTime) {
+  return "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}";
+}
 
 void main() => runApp(MyApp());
 
@@ -233,7 +236,17 @@ class TaskScreen extends StatelessWidget {
         final task = tasks[index];
         return ListTile(
           title: Text(task.title),
-          subtitle: Text(task.description),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(task.description),
+              SizedBox(height: 4),
+              Text(
+                "Due: ${formatDate(task.dueDate)}",
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -266,6 +279,7 @@ class TaskScreen extends StatelessWidget {
             ],
           ),
         );
+
       },
     );
   }
