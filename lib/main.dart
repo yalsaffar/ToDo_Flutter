@@ -5,6 +5,8 @@ import 'task_screen.dart';
 import 'completed_tasks_screen.dart';
 import 'new_task_sheet.dart';
 import 'package:lottie/lottie.dart';
+import 'instructions_screen.dart';
+
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -30,7 +32,12 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-      home: const SplashScreen(),
+      routes: {
+          '/': (context) => SplashScreen(),
+          '/instructions': (context) => InstructionsScreen(),
+          '/home': (context) => HomeScreen(),
+},
+
     );
   }
 }
@@ -63,8 +70,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     _fadeController.forward();
 
     Future.delayed(const Duration(seconds: 5)).then((_) {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
-    });
+  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => InstructionsScreen()));
+});
+
   }
 
   @override
