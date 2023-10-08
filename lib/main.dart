@@ -213,7 +213,7 @@ class WideLayout extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tasks'),
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.deepPurple,
         centerTitle: true,
       ),
       body: Row(
