@@ -9,6 +9,8 @@ class _InstructionsScreenState extends State<InstructionsScreen> {
   int _currentPage = 0;
   final PageController _pageController = PageController(initialPage: 0);
 
+
+ // Carlo: Possibly extract widgets into separate functions to improve code modularity.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
