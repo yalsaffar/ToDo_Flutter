@@ -1,3 +1,4 @@
+// Carlo
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'task.dart';
@@ -12,6 +13,7 @@ void main() => runApp(const MyApp());
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+// Carlo
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -42,6 +44,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// Carlo
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -106,6 +109,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     );
   }
 
+// Carlo
   @override
   void dispose() {
     _fadeController.dispose();
@@ -113,6 +117,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 }
 
+// Carlo
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -120,6 +125,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
+// Carlo
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0; // To keep track of the active screen
   List<Task> tasks = [];
@@ -165,6 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // Carlo
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -261,6 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+// Carlo
 class WideLayout extends StatelessWidget {
   final List<Task> tasks;
   final List<Task> completedTasks;
@@ -323,6 +331,7 @@ class WideLayout extends StatelessWidget {
   }
 }
 
+// Carlo
 class NarrowLayout extends StatefulWidget {
   final List<Task> tasks;
   final List<Task> completedTasks;
