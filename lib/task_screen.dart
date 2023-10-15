@@ -54,6 +54,8 @@ class TaskScreen extends StatelessWidget {
       );
     }
 
+    // Carlo: Possibly simplify the navigation to the TaskDetailsPage by extracting it into a separate function.
+    // Carlo: Possibly simplify the creation of ListTile widgets by using the map function.
     return ListView.builder(
       itemCount: tasks.length,
       itemBuilder: (ctx, index) {
