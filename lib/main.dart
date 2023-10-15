@@ -1,3 +1,10 @@
+// Carlo General Feedback:
+// Good README.ME.
+// Good commits.
+// Good naming convention and indentations.
+// Great app. Very user friendly, aesthetically pleasing and complete.
+// Possibly add more comments to explain the code to readers.
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'task.dart';
@@ -12,6 +19,7 @@ void main() => runApp(const MyApp());
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+// Carlo: Well structured. Includes important settings like the title, theme, and routes, which makes it easy to manage the app's global configuration.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,7 +41,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       routes: {
-          '/': (context) => SplashScreen(),
+          '/': (context) => SplashScreen(), // Carlo: Possibly use named constructors.
           '/instructions': (context) => InstructionsScreen(),
           '/home': (context) => HomeScreen(),
 },
@@ -42,6 +50,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// Carlo: Good practice for code organisation to implement SplashScreen as a separate widget.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -106,6 +115,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     );
   }
 
+// Carlo: Disposing _fadeController is good for preventing memory leaks and having efficient resource management.
   @override
   void dispose() {
     _fadeController.dispose();
@@ -113,6 +123,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 }
 
+// Carlo: Possibly break  down the HomeScreen class into smaller, more focused classes or functions.
+// Carlo: Possibly move the SplashScreen, HomeScreen, and WideLayout classes to separate files to improve code organization.
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -120,6 +132,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
+// Carlo: For the different voids, possibly add else statements for where the index is out of bounds (error handling).
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0; // To keep track of the active screen
   List<Task> tasks = [];
@@ -171,6 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, constraints) {
         if (constraints.maxWidth > 600) {
           // Wide layout
+          // Carlo: Good separation of wide and narrow layouts. Makes it easier to manage complex UI structures.
           return Scaffold(
             body: Row(
               children: [
@@ -220,6 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         } else {
           // Narrow layout
+          // Carlo: Good encapsulation of adding, deleting, etc. tasks in this class.
           List<Widget> _screens = [
             TaskScreen(
               tasks: tasks,
@@ -261,6 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+// Carlo: Good practice for responsive design to have WideLayout and NarrowLayout classes to provide different layouts for different screen sizes.
 class WideLayout extends StatelessWidget {
   final List<Task> tasks;
   final List<Task> completedTasks;
@@ -323,6 +339,7 @@ class WideLayout extends StatelessWidget {
   }
 }
 
+// Carlo: Good use of a stateful widget so that the UI reflects changes in pending and completed tasks.
 class NarrowLayout extends StatefulWidget {
   final List<Task> tasks;
   final List<Task> completedTasks;
