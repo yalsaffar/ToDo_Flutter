@@ -20,10 +20,13 @@ class TaskDetailsPage extends StatefulWidget {
 }
 
 class _TaskDetailsPageState extends State<TaskDetailsPage> {
+  // Carlo: Here you could initialise directly. E.g.: late TextEditingController _titleController = TextEditingController();
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
+  // Carlo: Same with dueDate. E.g.: DateTime dueDate = DateTime.now();
   DateTime dueDate;
 
+// Carlo: Initialising before would let you delete this line of code.
   _TaskDetailsPageState() : dueDate = DateTime.now();  // default initialization
 
   @override
@@ -41,6 +44,11 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
     super.dispose();
   }
 
+  // Carlo: You could extract date & time picker into a separate function.
+  // Carlo: You could use a reusable function for button styling.
+  // Carlo: Could use a FutureBuilder to show a CircularProgressIndicator while the task is being updated.
+  // Carlo: Could also wrap text fields in a form widget.
+  // Carlo: Could add a confirmation dialog for the different actions.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
