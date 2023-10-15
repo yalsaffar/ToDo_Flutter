@@ -19,6 +19,7 @@ class TaskDetailsPage extends StatefulWidget {
   _TaskDetailsPageState createState() => _TaskDetailsPageState();
 }
 
+// Carlo
 class _TaskDetailsPageState extends State<TaskDetailsPage> {
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
@@ -41,6 +42,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
     super.dispose();
   }
 
+  // Carlo
   @override
   Widget build(BuildContext context) {
     return Scaffold(
