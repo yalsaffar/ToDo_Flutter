@@ -12,6 +12,10 @@ class CompletedTasksScreen extends StatelessWidget {
     required this.onUncompleteTask,
   });
 
+
+  // Carlo: Possibly extract parts of the code into separate reusable widgets to make the code more modular.
+  // Carlo: Instead of hardcoding the text styles, you could create named constants for text styles to ensure consistency and make it easier to update styles.
+  // Carlo: You could use ListView.separated to separate list items with a divider to make the completed tasks list more user-friendly.
   @override
   Widget build(BuildContext context) {
     if (completedTasks.isEmpty) {
